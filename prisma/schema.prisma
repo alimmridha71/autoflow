@@ -1,0 +1,146 @@
+// Autoflow E-Commerce Prisma Schema
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String    @id @default(uuid())
+  name          String
+  username      String?   @unique
+  email         String    @unique
+  passwordHash  String
+  phone         String?
+  role          String    @default("CUSTOMER") // SUPER_ADMIN, ADMIN, MANAGER, CUSTOMER
+  avatar        String?
+  addresses     Address[]
+  orders        Order[]
+  reviews       Review[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Address {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fullAddress  String
+  city         String
+  state        String
+  country      String   // "Bangladesh" | "India"
+  postalCode   String
+  isDefault    Boolean  @default(false)
+}
+
+model Category {
+  id          String     @id @default(uuid())
+  name        String
+  slug        String     @unique
+  icon        String?
+  image       String?
+  products    Product[]
+  parentId    String?
+  parent      Category?  @relation("SubCategories", fields: [parentId], references: [id])
+  children    Category[] @relation("SubCategories")
+  createdAt   DateTime   @default(now())
+}
+
+model Product {
+  id             String      @id @default(uuid())
+  name           String
+  sku            String      @unique
+  barcode        String?
+  slug           String      @unique
+  brand          String
+  model          String?
+  categoryId     String
+  category       Category    @relation(fields: [categoryId], references: [id])
+  images         String      // JSON Stringified array
+  videoUrl       String?
+  description    String
+  specifications String      // JSON Stringified specs array
+  regularPrice   Float
+  salePrice      Float?
+  discount       Float?      // Percentage
+  stockQuantity  Int
+  variants       String?     // JSON Stringified variants
+  weight         String?
+  dimensions     String?
+  warranty       String?
+  tags           String      // JSON Stringified tags
+  rating         Float       @default(4.8)
+  reviewCount    Int         @default(0)
+  isFeatured     Boolean     @default(false)
+  isBestSeller   Boolean     @default(false)
+  isNewArrival   Boolean     @default(false)
+  isFlashSale    Boolean     @default(false)
+  reviews        Review[]
+  orderItems     OrderItem[]
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating    Int
+  comment   String
+  createdAt DateTime @default(now())
+}
+
+model Order {
+  id              String        @id @default(uuid())
+  orderNumber     String        @unique
+  userId          String?
+  user            User?         @relation(fields: [userId], references: [id])
+  customerName    String
+  customerEmail   String
+  customerPhone   String
+  shippingAddress String
+  country         String        // "Bangladesh" | "India"
+  status          String        @default("PENDING") // PENDING, CONFIRMED, PROCESSING, SHIPPED, DELIVERED, CANCELLED
+  paymentMethod   String
+  paymentStatus   String        @default("PENDING") // PAID, PENDING, FAILED
+  items           OrderItem[]
+  subtotal        Float
+  discountAmount  Float         @default(0)
+  shippingCost    Float         @default(0)
+  totalAmount     Float
+  currency        String        // BDT, INR, USD
+  couponCode      String?
+  trackingNumber  String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int
+  unitPrice Float
+  color     String?
+  storage   String?
+}
+
+model Coupon {
+  id            String   @id @default(uuid())
+  code          String   @unique
+  discountType  String   // PERCENTAGE | FIXED
+  discountValue Float
+  minPurchase   Float?
+  expiresAt     DateTime
+  usageLimit    Int?
+  usedCount     Int      @default(0)
+  isActive      Boolean  @default(true)
+}

@@ -106,30 +106,44 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Customer Care */}
+          {/* Customer Support */}
           <div className="space-y-3">
-            <h4 className="font-bold text-white uppercase text-xs tracking-wider">Customer Care</h4>
+            <h4 className="font-bold text-white uppercase text-xs tracking-wider">Customer Support</h4>
             <ul className="space-y-2">
               <li><Link href="/track-order" className="hover:text-white transition">Track Your Order</Link></li>
               <li><Link href="/account" className="hover:text-white transition">My Account</Link></li>
-              <li><Link href="/admin" className="hover:text-blue-400 transition text-blue-500 font-semibold">Admin Panel Login</Link></li>
-              <li><Link href="#" className="hover:text-white transition">Return Policy</Link></li>
-              <li><Link href="#" className="hover:text-white transition">Privacy & Terms</Link></li>
+              <li><Link href="/about" className="hover:text-white transition">About Us</Link></li>
+              <li><Link href="/contact" className="hover:text-white transition">Contact Us</Link></li>
+              <li><Link href="/blog" className="hover:text-white transition">Blog & News</Link></li>
+              <li><Link href="/faq" className="hover:text-white transition">FAQ</Link></li>
+              <li><Link href="/admin" className="hover:text-blue-400 transition text-blue-500 font-semibold">Admin Panel</Link></li>
             </ul>
           </div>
 
-          {/* Supported Payments */}
+          {/* Legal Policies */}
           <div className="space-y-3">
-            <h4 className="font-bold text-white uppercase text-xs tracking-wider">Payment Gateways</h4>
-            <p className="text-[11px] text-slate-500">Supported local & international gateways:</p>
-            <div className="flex flex-wrap gap-1.5">
-              <span className="px-2 py-1 bg-slate-900 border border-slate-800 rounded font-semibold text-rose-400">bKash</span>
-              <span className="px-2 py-1 bg-slate-900 border border-slate-800 rounded font-semibold text-orange-400">Nagad</span>
-              <span className="px-2 py-1 bg-slate-900 border border-slate-800 rounded font-semibold text-purple-400">Rocket</span>
-              <span className="px-2 py-1 bg-slate-900 border border-slate-800 rounded font-semibold text-blue-400">UPI</span>
-              <span className="px-2 py-1 bg-slate-900 border border-slate-800 rounded font-semibold text-cyan-400">Razorpay</span>
-              <span className="px-2 py-1 bg-slate-900 border border-slate-800 rounded font-semibold text-emerald-400">COD</span>
-            </div>
+            <h4 className="font-bold text-white uppercase text-xs tracking-wider">Legal Policies</h4>
+            <ul className="space-y-2">
+              <li><Link href="/privacy-policy" className="hover:text-white transition">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="hover:text-white transition">Terms of Service</Link></li>
+              <li><Link href="/refund-policy" className="hover:text-white transition">Refund Policy</Link></li>
+              <li><Link href="/shipping-policy" className="hover:text-white transition">Shipping Policy</Link></li>
+              <li><Link href="/cookie-policy" className="hover:text-white transition">Cookie Policy</Link></li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Supported Payments */}
+        <div className="pt-8 pb-4 border-t border-slate-800/60 flex flex-col sm:flex-row justify-between items-center gap-4 text-slate-500">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Supported Secure Payment Gateways</span>
+          <div className="flex flex-wrap gap-2 justify-center">
+            <span className="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg font-bold text-rose-500 shadow-sm">bKash</span>
+            <span className="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg font-bold text-orange-400 shadow-sm">Nagad</span>
+            <span className="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg font-bold text-purple-400 shadow-sm">Rocket</span>
+            <span className="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg font-bold text-indigo-400 shadow-sm">SSLCommerz</span>
+            <span className="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg font-bold text-blue-400 shadow-sm">UPI / BHIM</span>
+            <span className="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg font-bold text-cyan-400 shadow-sm">Razorpay</span>
+            <span className="px-2.5 py-1 bg-slate-900 border border-slate-800 rounded-lg font-bold text-emerald-450 shadow-sm">COD</span>
           </div>
         </div>
 

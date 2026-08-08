@@ -21,6 +21,7 @@ import {
   ChevronDown
 } from 'lucide-react';
 import { useStore } from '@/lib/store';
+import { INITIAL_CATEGORIES } from '@/lib/mockData';
 import MegaMenu from './MegaMenu';
 
 export default function Header() {
@@ -37,21 +38,16 @@ export default function Header() {
     products,
     currentUser,
     isAdminLoggedIn,
-    logout
+    logout,
+    darkMode,
+    toggleDarkMode
   } = useStore();
 
-  const [darkMode, setDarkMode] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isListening, setIsListening] = useState(false);
-
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    if (typeof document !== 'undefined') {
-      document.documentElement.classList.toggle('dark');
-    }
-  };
+  const [activeCategoryAccordion, setActiveCategoryAccordion] = useState<string | null>(null);
 
   // Instant Search auto-suggestions
   const filteredSuggestions = searchQuery.trim()
@@ -312,6 +308,176 @@ export default function Header() {
           </div>
         </div>
       </div>
+
+      {/* Mobile Drawer Navigation Menu */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-50 md:hidden flex justify-end bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="absolute inset-0" onClick={() => setIsMobileMenuOpen(false)} />
+          
+          <div className="relative w-full max-w-xs h-full bg-slate-900 border-l border-slate-800 p-6 flex flex-col justify-between shadow-2xl z-10 animate-in slide-in-from-right duration-300">
+            <div className="space-y-6 overflow-y-auto max-h-[85vh] scrollbar-hide pr-2">
+              
+              <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+                <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-extrabold shadow shadow-blue-500/30">
+                    <Zap className="w-5 h-5 fill-current" />
+                  </div>
+                  <span className="text-lg font-extrabold text-white tracking-tight">Autoflow</span>
+                </Link>
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search gadgets..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-slate-800 text-slate-100 pl-9 pr-4 py-2 rounded-xl text-xs outline-none border border-transparent focus:border-blue-500 transition-all"
+                />
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+              </div>
+
+              <nav className="space-y-4">
+                <div className="space-y-1">
+                  <Link
+                    href="/shop"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block px-3 py-2 rounded-xl text-slate-200 hover:bg-slate-800 hover:text-white font-bold text-xs"
+                  >
+                    Shop All
+                  </Link>
+                  <Link
+                    href="/shop?filter=flash"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block px-3 py-2 rounded-xl text-amber-500 hover:bg-slate-800 font-bold text-xs"
+                  >
+                    ⚡ Flash Sale
+                  </Link>
+                  <Link
+                    href="/track-order"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block px-3 py-2 rounded-xl text-emerald-400 hover:bg-slate-800 font-bold text-xs"
+                  >
+                    📦 Track Order
+                  </Link>
+                </div>
+
+                <div className="space-y-1 pt-2 border-t border-slate-800">
+                  <div className="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                    Departments
+                  </div>
+                  <button
+                    onClick={() => setActiveCategoryAccordion(activeCategoryAccordion === 'open' ? null : 'open')}
+                    className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-200 hover:bg-slate-800 hover:text-white font-bold text-xs"
+                  >
+                    <span className="flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-blue-500" /> Browse Categories
+                    </span>
+                    <ChevronDown className={`w-3.5 h-3.5 transition-transform ${activeCategoryAccordion === 'open' ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  {activeCategoryAccordion === 'open' && (
+                    <div className="pl-6 space-y-1 py-1 animate-in fade-in duration-200">
+                      {INITIAL_CATEGORIES.map((cat) => (
+                        <Link
+                          key={cat.id}
+                          href={`/shop?category=${cat.slug}`}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="block px-3 py-1.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-xs"
+                        >
+                          {cat.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-1 pt-2 border-t border-slate-800">
+                  <div className="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                    Information
+                  </div>
+                  {[
+                    { label: 'About Us', href: '/about' },
+                    { label: 'Contact Us', href: '/contact' },
+                    { label: 'Blog & Articles', href: '/blog' },
+                    { label: 'FAQ', href: '/faq' }
+                  ].map((link, idx) => (
+                    <Link
+                      key={idx}
+                      href={link.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="block px-3 py-2 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white font-medium text-xs"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              </nav>
+            </div>
+
+            <div className="pt-4 border-t border-slate-800 space-y-4">
+              <div className="flex items-center justify-between text-xs px-3">
+                <span className="text-slate-400 font-medium">Currency</span>
+                <select
+                  value={currency}
+                  onChange={(e) => setCurrency(e.target.value as any)}
+                  className="bg-slate-800 text-slate-200 outline-none cursor-pointer rounded-lg px-2.5 py-1 font-bold border border-slate-700"
+                >
+                  <option value="BDT">BDT (৳)</option>
+                  <option value="INR">INR (₹)</option>
+                  <option value="USD">USD ($)</option>
+                </select>
+              </div>
+
+              <div className="flex items-center justify-between text-xs px-3">
+                <span className="text-slate-400 font-medium">Language</span>
+                <select
+                  value={language}
+                  onChange={(e) => setLanguage(e.target.value as any)}
+                  className="bg-slate-800 text-slate-200 outline-none cursor-pointer rounded-lg px-2.5 py-1 font-bold border border-slate-700"
+                >
+                  <option value="EN">English</option>
+                  <option value="BN">বাংলা</option>
+                  <option value="HI">हिंदी</option>
+                </select>
+              </div>
+
+              <div className="flex items-center justify-between text-xs px-3">
+                <span className="text-slate-400 font-medium">Theme Mode</span>
+                <button
+                  onClick={toggleDarkMode}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white transition font-bold border border-slate-700"
+                >
+                  {darkMode ? (
+                    <>
+                      <Sun className="w-3.5 h-3.5 text-amber-400" /> <span>Light Mode</span>
+                    </>
+                  ) : (
+                    <>
+                      <Moon className="w-3.5 h-3.5" /> <span>Dark Mode</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {currentUser && (
+                <button
+                  onClick={() => { logout(); setIsMobileMenuOpen(false); }}
+                  className="w-full py-2.5 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20 font-extrabold text-xs hover:bg-rose-500 hover:text-white transition"
+                >
+                  Sign Out
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
